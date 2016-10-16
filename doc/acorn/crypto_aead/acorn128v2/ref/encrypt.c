@@ -14,14 +14,15 @@ unsigned char FBK128(unsigned char *state, unsigned char *ks, unsigned char ca, 
 {
     unsigned char f;
     *ks = KSG128(state);
-    f  = state[0] ^ (state[107] ^ 1) ^ maj(state[244], state[23], state[160]) ^ ch(state[230], state[111], state[66]) ^ (ca & state[196]) ^ (cb & (*ks));
+    f  = (state[0] ^ (state[107] ^ 1) ^ maj(state[244], state[23], state[160]) ^
+          ch(state[230], state[111], state[66]) ^ (ca & state[196]) ^ (cb & (*ks)));
     return f;
 }
 
 //encrypt one bit
 void Encrypt_StateUpdate128_1bit(unsigned char *state, unsigned char plaintextbit, unsigned char *ciphertextbit, unsigned char *ks, unsigned char ca, unsigned char cb)
 {
-    unsigned int  j;
+    unsigned int  j,k;
     unsigned char f;
 
     state[289] ^= state[235] ^ state[230];
@@ -75,6 +76,7 @@ void acorn128_enc_onebyte(unsigned char *state, unsigned char plaintextbyte,
         ca = (cabyte >> i) & 1;
         cb = (cbbyte >> i) & 1;
         plaintextbit = (plaintextbyte >> i) & 1;
+        
         Encrypt_StateUpdate128_1bit(state, plaintextbit, &ciphertextbit, &kstem, ca, cb);
         *ciphertextbyte |= (ciphertextbit << i);
         *ksbyte |= (kstem << i);
@@ -104,23 +106,40 @@ void acorn128_dec_onebyte(unsigned char *state, unsigned char *plaintextbyte,
 /*The input to initialization is the 128-bit key; 128-bit IV;*/
 void acorn128_initialization(const unsigned char *key, const unsigned char *iv, unsigned char *state)
 {
-        int i,j;
-        unsigned char m[293], ks, tem;
+    int i,j,k;
+    unsigned char m[293], ks, tem;
 
-        //initialize the state to 0
-        for (j = 0; j <= 292; j++) state[j] = 0;
+    //initialize the state to 0
+    for (j = 0; j <= 292; j++) state[j] = 0;
 
-        //set the value of m
-        for (j = 0; j <=  15;   j++)   m[j] = key[j];
-        for (j = 16; j <= 31;   j++)   m[j] = iv[j - 16];
-        for (j = 32; j <= 223;  j++)   m[j] = key[j & 0xf];
-        m[32] ^= 1;
+    //set the value of m
+    for (j = 0; j <=  15;   j++)   m[j] = key[j];
+    for (j = 16; j <= 31;   j++)   m[j] = iv[j - 16];
+    for (j = 32; j <= 223;  j++)   m[j] = key[j & 0xf];
+    m[32] ^= 1;
+    for (j = 224; j <= 292;  j++)   m[j] = 0;
+        
+    for( i = 0; i <= 15; i++) printf("%2x", m[i]);
+    printf("\n");
+    
+    printf("\n\n#####\n");
+    for( k = 0; k <= 293; k++){
+        printf("%2x", m[k]);
+        if(!((k+1) % 16)) printf("\n");
+    }
+    printf("\n");
 
-        //run the cipher for 1792 steps
-        for (i = 0; i < 224; i++)
-        {
-             acorn128_enc_onebyte(state, m[i], &tem, &ks, 0xff, 0xff);
-        }
+    //run the cipher for 1792 steps
+    for (i = 0; i < 224; i++)
+    {
+        acorn128_enc_onebyte(state, m[i], &tem, &ks, 0xff, 0xff);        
+    }
+    /*printf("\n\n################################:%d\n", i);
+    for( k = 0; k <= 293; k++){
+        printf("%2x", state[k]);
+        if(!((k+1) % 16)) printf("\n");
+    }
+    printf("\n");*/
 }
 
 //the finalization state of acorn
@@ -149,19 +168,31 @@ int crypto_aead_encrypt(
 	const unsigned char *k
 	)
 {
-    unsigned long long i;
+    unsigned long long i, j;
     unsigned char plaintextbyte, ciphertextbyte, ksbyte, mac[16];
     unsigned char state[293];
     unsigned char ca, cb;
 
     //initialization stage
     acorn128_initialization(k, npub, state);
+    printf("\n\nacorn128_initialization: ");
+    for( j = 0; j <= 293; j++){
+        printf("%2x", state[j]);
+        if(!((j+1) % 16)) printf("\n");
+    }
+    printf("\n");
 
     //process the associated data
     for (i = 0; i < adlen; i++)
     {
         acorn128_enc_onebyte(state, ad[i], &ciphertextbyte, &ksbyte, 0xff, 0xff);
     }
+    printf("\n\nassociated data: ");
+    for( j = 0; j <= 293; j++){
+        printf("%2x", state[j]);
+        if(!((j+1) % 16)) printf("\n");
+    }
+    printf("\n");
 
     for (i = 0; i < 256/8; i++)
     {
@@ -175,6 +206,12 @@ int crypto_aead_encrypt(
 
         acorn128_enc_onebyte(state, plaintextbyte, &ciphertextbyte, &ksbyte, ca, cb);
     }
+    printf("\n\nacorn128_enc_onebyte: ");
+    for( j = 0; j <= 293; j++){
+        printf("%2x", state[j]);
+        if(!((j+1) % 16)) printf("\n");
+    }
+    printf("\n");
 
 
     //process the plaintext
@@ -198,7 +235,9 @@ int crypto_aead_encrypt(
 
     //finalization stage, we assume that the tag length is a multiple of bytes
     acorn128_tag_generation(mlen, adlen, 16, mac, state);
-
+    for (i=0; i<16; i++){
+        printf("\n%2x", mac[i]);
+    }
     *clen = mlen + 16;
     memcpy(c+mlen, mac, 16);
 
@@ -280,7 +319,7 @@ int main()
 {
     unsigned char t,state[500];
     unsigned long long s[500];
-    int i,j ;
+    int i,j, k;
 
     unsigned char plaintext[4096];
     unsigned char ad[4096];
@@ -303,6 +342,14 @@ int main()
     for (i = 0; i < 4096; i++) ciphertext[i] = 0;
     for (i = 0; i < 4096; i++) ad[i] = i%7;
 
+    printf("\n\nThe key is: ");
+    for( i = 0; i < 16; i++) printf("%2x", key[i]);
+    printf("\n");
+    
+    printf("\n\nThe iv is: ");
+    for( i = 0; i < 16; i++) printf("%2x", iv[i]);
+    printf("\n");
+    
     printf("\n\nThe plaintext is: ");
     for( i = 0; i < msglen; i++) printf("%2x", plaintext[i]);
     printf("\n");
@@ -310,7 +357,12 @@ int main()
     crypto_aead_encrypt(ciphertext,&clen,plaintext,msglen,ad,adlen,0,iv,key);
     
     printf("\n\nThe ciphertext is: ");
-    for( i = 0; i < clen; i++) printf("%2x", ciphertext[i]);
+    
+    printf("\n\n#####\n");
+    for( k = 0; k <= clen; k++){
+        printf("%2x", ciphertext[k]);
+        if(!((k+1) % 16)) printf("\n");
+    }
     printf("\n");
     
     for( i = 0; i < msglen; i++) plaintext[i] = 0;
