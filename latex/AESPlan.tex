@@ -1,0 +1,72 @@
+\documentclass[a4paper,11pt]{article}
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{lmodern}
+\usepackage{amsmath}
+
+\title{A Very Compact AES}
+\author{Abhishek Bajpai}
+
+\begin{document}
+
+\maketitle
+\tableofcontents
+
+\begin{abstract}
+\end{abstract}
+
+\section{AES}
+A round in AES comprised of following functions
+
+\begin{enumerate}
+  \item \textbf{AddRoundKey} : $S \oplus Rk$ where S is state matrix
+  \item \textbf{SubBytes} : $AT(s^{-1})$ where s id element of state matrix and AT is affine transform
+  \item \textbf{ShiftRow} : Permutation in rows (not important)
+  \item \textbf{MixColumn}:  $c(x)=3x^{3}+x^{2}+x+2$
+  
+
+  ${\begin{bmatrix}b_{0}\\b_{1}\\b_{2}\\b_{3}\end{bmatrix}}={\begin{bmatrix}2&3&1&1\\1&2&3&1\\1&1&2&3\\3&1&1&2\end{bmatrix}}{\begin{bmatrix}a_{0}\\a_{1}\\a_{2}\\a_{3}\end{bmatrix}}$
+  
+\end{enumerate}
+
+Now SubBytes can be optimised be doing inverse in sub field $(GF(2^4)^2)$.
+Let's say $\delta$ emplies $GF(2^8)$ to $GF(2^4)^2$ transformation matrix and $\delta^{-1}$ emplies $GF(2^4)^2$ to $GF(2^8)$ 
+
+then SubBytes can be implemented as:
+
+$AT(\delta^{-1}\times (\delta \times s)^{-1})$
+$\Rightarrow M \times (\delta^{-1} \times (\delta \times s)^{-1}) \oplus C$
+
+if we some how do the AT in subfield then implementation would be
+
+$\Rightarrow \delta^{-1} \times ( M' \times (\delta \times s)^{-1} \oplus C')$
+
+I can derive $M'$ and $C'$ as
+
+$M' = \delta \times M \times \delta^{-1}$
+
+$C' = \delta \times C$
+
+now as shift row is just a row permutation then
+
+
+\begin{equation}
+\begin{split}
+Round & \Rightarrow MixColumn(ShiftRow(SubBytes(addroundkey(S)))) \\
+ & \Rightarrow MixColumn(ShiftRow(SubBytes(Rk \oplus S))) \\
+ & \Rightarrow MixColumn(ShiftRow(\delta^{-1} \times ( M' \times (\delta \times s)^{-1} \oplus C')))\\
+ & \text{where s is element of S}\\
+ & \Rightarrow MixColumn(\delta^{-1} \times (ShiftRow(M' \times (\delta \times s)^{-1} \oplus C')))\\ 
+ & \text{Now we know that mixcolumn also works in same $GF(2^8)$}\\
+ thus &\Rightarrow \delta^{-1} \times (MixColumn'(ShiftRow(M' \times (\delta \times s)^{-1} \oplus C')))\\ 
+ & \text{further $\delta \times s$ emplies element of $\delta \times S \oplus \delta \times Rk$}\\
+ & \Rightarrow \delta^{-1} \times Round(\delta \times S)\\
+\end{split}
+\end{equation}
+where $MixColumn'$ is $MixColumn$ in $GF((2^4)^2)$
+
+This suggests that we can do all the round calculations in subfield while doing so we can eleminate implementing $\delta$ and $\delta^{-1}$ in each round. further decreasing latency.
+
+
+
+\end{document}

@@ -1,3 +1,9 @@
 *.ipynb_checkpoints/
 *.zip
 *.*~
+/latex/AESPlan.aux
+/latex/AESPlan.fls
+/latex/AESPlan.log
+/latex/AESPlan.pdf
+/latex/AESPlan.synctex.gz
+/latex/AESPlan.toc
