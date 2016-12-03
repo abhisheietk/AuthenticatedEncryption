@@ -75,7 +75,7 @@ Shubhamoy Maitra\IEEEauthorrefmark{2},
 
 
 \begin{abstract}
-There have been several implementations of compact AES encryption/decryption cores in terms of gate area. Generally optimistaions are based on implementing Substitution box in a sub galois field. In this proposal we would like to investigate wether we can implement complete AES round including shift row, mix column and add round key in sub galois field domain. Assumption is that we can have mix column in sub galois field as compact as present mix column and further better optimised inverse mix column in sub galois field. If this assumption is correct then we can straight away avoid $GF(2^8) \leftrightarrow GF((2^4)^2)$ transformations at every round while doing substitution byte.
+There have been several implementations of compact AES encryption/decryption cores in terms of gate area. Generally optimistaions are based on implementing Substitution box in a composite galois field. In this proposal we would like to investigate whether we can implement complete AES round including shift row, mix column and add round key in composite galois field domain. Assumption is that we can have mix column in composite galois field as compact as present mix column and further better optimised inverse mix column in composite galois field. If this assumption is correct then we can straight away avoid $GF(2^8) \leftrightarrow GF((2^4)^2)$ transformations at every round while doing substitution byte further restricting it to start and at the end of the cipher.
 
 \end{abstract}
 
@@ -89,7 +89,7 @@ There have been several implementations of compact AES encryption/decryption cor
 \section{Introduction}
 In 2001 Rijndael design was established as the Advanced Encryption Standard (AES) for the encryption of electronic data by the U.S. National Institute of Standards and Technology (NIST). Since then Rijndael design has been subject to several cryptanalysis and till date no serious attacks have been found. There have been lot of efforts also for an optimised implementation of this algorithm in software as well as hardware.
 
-In this proposal we will study sub galois field based optimisation approaches for implementing AES algorithm and we will see wether we can extend it to the other blocks of the algorithm in order to have better compact core. We will also study shared features of encryption and decryption cores in sub galois field domain. Further we would like to have implementations optimised for Area/Speed and both as well.
+In this proposal we will study composite galois field based optimisation approaches for implementing AES algorithm and we will see whether we can extend it to the other blocks of the algorithm in order to have better compact core. We will also study shared features of encryption and decryption cores in composite galois field domain. Further we would like to have implementations optimised for Area/Speed and both as well.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% SECTION
@@ -371,8 +371,8 @@ s_{0,c}\\s_{1,c}\\s_{2,c}\\s_{3,c} \end{array} \right]
 
 we can see that coefficients of $a^{-1}$ are more complex than coefficients of $a(X)$.As a result, hardware implementing AES decryption is larger and slower than for encryption. In order to reduce hardware cost, the InvMixColumn can be decomposed to share logic resources with MixColumn.
 
-\subsection {MixColumn in sub galois field}
-Since this math is done in Rijndael's Galois field, the MixColumn and InverseMixColumn can be transformed in the sub Galois Field same used in the subbyte.
+\subsection {MixColumn in composite galois field}
+Since this math is done in Rijndael's Galois field, the MixColumn and InverseMixColumn can be transformed \cite{Rudra2001} in the composite galois Field same used in the subbyte.
 
 For example MixColumn can be represented by
 
@@ -404,7 +404,7 @@ s_{0,c}' \\s_{1,c}' \\s_{2,c}' \\s_{3,c}' \end{array} \right]\right) =
 s_{0,c}\\s_{1,c}\\s_{2,c}\\s_{3,c} \end{array} \right]\right)
 \end{equation}
 
-where mix column metrix in sub galois field (same field which have been used in subbyte) can be computed as
+where mix column metrix in composite galois field (same field which have been used in subbyte) can be computed as
 
 \begin{equation}
 \delta \left(\left[ \begin{array}{cccccccc}
@@ -421,7 +421,7 @@ where mix column metrix in sub galois field (same field which have been used in 
 \end{equation}
 
 
-similarly inv mix column metrix in sub galois field can be computed as
+similarly inv mix column metrix in composite galois field can be computed as
 
 
 \begin{equation}
@@ -438,7 +438,7 @@ similarly inv mix column metrix in sub galois field can be computed as
  \end{array} \right]
 \end{equation}
 
-now we may find a sub field for which these metrices may result in better optimised for implementation point of view then we can do all the rounds in same sub galois field. And do the GF transformations at the last and at the end. That way we can better optimise the implementation.
+now we may find a sub field for which these metrices may result in better optimised for implementation point of view then we can do all the rounds in same composite galois field. And do the GF transformations at the last and at the end. That way we can better optimise the implementation.
 
 \bibliography{thesis}
 \bibliographystyle{ieeetr}
