@@ -1,0 +1,531 @@
+\documentclass[10pt, conference, compsocconf]{IEEEtran}
+% \documentclass[conference]{../sty/IEEEtran}
+%\usepackage{ifpdf}
+%\usepackage{cite}
+\ifCLASSINFOpdf
+  \usepackage[pdftex]{graphicx}
+  \graphicspath{{./images/}}
+\else
+  \usepackage[dvips]{graphicx}
+  \graphicspath{{./images/}}
+\fi
+%\usepackage[cmex10]{amsmath}
+%\usepackage{algorithmic}
+\usepackage{array}
+%\usepackage{mdwmath}
+%\usepackage{mdwtab}
+%\usepackage{eqparbox}
+%\usepackage[caption=false]{caption}
+%\usepackage[font=footnotesize]{subfig}
+%\usepackage[caption=false,font=footnotesize]{subfig}
+%\usepackage{fixltx2e}
+%\usepackage{stfloats}
+%\usepackage{url}
+%\hyphenation{op-tical net-works semi-conduc-tor}
+
+\begin{document}
+
+\title{Design and Development of an Optimised Hardware Encryption module of gigabit throughput base on Composite Glois Field Arithmetic with Feedback Modes}
+
+
+\author{\IEEEauthorblockN{
+Abhishek Bajpai\IEEEauthorrefmark{1},
+Bhagwan Bathe\IEEEauthorrefmark{3},\\%,
+Sunil Kulgod\IEEEauthorrefmark{2}
+%S K Parulkar\IEEEauthorrefmark{4},
+%R S Mundada\IEEEauthorrefmark{5}
+}
+\IEEEauthorblockA{Computer Division,
+Bhabha Atomic Research Centre,\\
+Mumbai, India\\
+Email: (
+\IEEEauthorrefmark{1}abbajpai, 
+\IEEEauthorrefmark{3}bathebn, 
+\IEEEauthorrefmark{2}svkulgod%, \\ 
+%\IEEEauthorrefmark{4}skparul, 
+%\IEEEauthorrefmark{5}rsm
+)@barc.gov.in}
+\and
+\IEEEauthorblockN{
+Jayant Sharma\IEEEauthorrefmark{6},
+Diksha Moolchandani\IEEEauthorrefmark{7}, \\
+Deepak Kapoor\IEEEauthorrefmark{8}, 
+Rahul Yamasani\IEEEauthorrefmark{9}%,
+%Saket Saurav\IEEEauthorrefmark{10}
+}
+\IEEEauthorblockA{IIITDM Jabalpur,
+India\\
+Email: (
+\IEEEauthorrefmark{6}jayantsharma, 
+\IEEEauthorrefmark{7}dikshamoolchandani,\\ 
+\IEEEauthorrefmark{8}deepakkapoor, 
+\IEEEauthorrefmark{9}yamasanirahul%, 
+%\IEEEauthorrefmark{10}saket
+)@iiitdmj.ac.in}
+}
+
+% use for special paper notices
+%\IEEEspecialpapernotice{(Invited Paper)}
+
+\maketitle
+
+
+\begin{abstract}
+
+In this paper a general purpose `FPGA cluster' based distributed framework for high-performance Computing has been proposed. Such a set-up finds its usage in cryptanalysis applications. The framework abstract crypto kernels (compute modules) implemented over an underlying networked FPGA cluster, for the host's user-space cryptanalytic applications. Issues related to the kernel (crypto compute module) management and efficient distribution of the network bandwidth between the inter-FPGA and intra-FPGA kernels have been covered. 40-bit partial key attack over AES256 has been demonstrated as a capability demonstration. Performance higher than clustered CPUs and GPUs at lower costs and power is reported.
+
+\end{abstract}
+
+\begin{IEEEkeywords}
+FPGA; cryptanalysis; cluster; framework; high performance computing; 
+
+\end{IEEEkeywords}
+
+
+% For peer review papers, you can put extra information on the cover
+% page as needed:
+% \ifCLASSOPTIONpeerreview
+% \begin{center} \bfseries EDICS Category: 3-BBND \end{center}
+% \fi
+%
+% For peerreview papers, this IEEEtran command inserts a page break and
+% creates the second title. It will be ignored for other modes.
+\IEEEpeerreviewmaketitle
+
+\section{Introduction}
+% no \IEEEPARstart
+
+In cryptanalysis, we observe a paradigm shift from mathematical observation based characteristic detection towards heuristic statistical observation based characteristic discovery. For example, Roos’ biases for the first few bytes of RC4 were first observed by Andrew Roos and proved by Goutam Paul et. al.\cite{paul2008non} Later Nadhem AlFardan et. al.\cite{alfardan2013security} statistically searched similar biases for first 256 bytes of the keystream. Present day cryptography heavily relies on such high-throughput statistical techniques for algorithm characterisation. Most of these characterisation techniques require running parallel instances of simpler algorithms over a large amount of data for a large amount of time. Such characterisation techniques include:
+
+\begin{itemize}
+  \item High performance online Statistical test suit for randomness test
+  \item Bias discovery
+  \item Linear Crypt-analysis
+  \item Differential Crypt-analysis
+  \item TMTO (Time Memory Trade Off), TMDTO (Time Memory Data Trade Off) based attacks
+  \item Collision Attacks
+  \item Side Channel Attacks
+  \item Fault Attacks
+\end{itemize}
+
+\subsection{High-Performance Computing (HPC) systems}
+For HPC systems, clustered devices is a general approach to begin with. Though clustering results in low communication bandwidth and high cost as compared to integrated systems. Yet it is the fastest way to achieve the HPC setup. Further, Heterogeneous High-Performance Computing (HHPC) is about offloading CPU with an another computing component (accelerator) while maintaining a hardware-software trade-off.
+
+GPUs, because of their high count computing elements and fine grained architecture, staged as a good candidate for HHPC accelerator. Though they are limited with SIMD (Single instruction, multiple data) instructions set. thus, supports simultaneous (parallel) computations, but only a single process (instruction) at a given moment. These architectures exploit data level parallelism, but not concurrency.
+
+FPGAs are extremely fine grained and have massively interconnected architecture. It's basic computing element (logic block) comprised of few small bit sized function generators(LUTs). Thus, supports different simultaneous computations with concurrency. These properties allows to implement massively parallel pipe-lined cryptanalysis stages. Our initial work on AES implementation\cite{bajpaidesign} and optimized Karatsuba Ofman multiplier \cite{Kapoor:2016:LOI:2916026.2916030} based ECC (Elliptic Curve Cryptography) accelerator reports significant advantage over processors based implementations. The main drawback of this architecture is it's difficult and complex development cycle.
+
+\subsection{COPACOBANA\cite{guneysu2008enhancing}}
+COPACOBANA, "The Cost-Optimized Parallel Code Breaker", based on FPGA clusters and optimised for cryptanalysis applications was developed for parallel computation problems having low communication requirements. It has been known for an exhaustive key search attack on the Data Encryption Standard (DES). An enhanced version of COPACOBANA (FPGA based accelerator) utilises 16 plug-in modules each hosting 8 FPGAs supporting direct binary addressing. It uses Ethernet interface to communicate with the Host but communication on plug-in DIMM module is via parallel buses. FPGA-specific modules pose many difficulties like routeing, EMI problems of parallel buses and scalability of design. 
+
+
+Here a generic and flexible framework have been proposed which supports FPGA clusters in various network topologies. The size of a network is expandable suiting the needs of applications. The framework utilise high-speed interfaces and specifies basic building blocks for interconnects it also specifies various network configurations and automatic unique id allocation. further, it specifies packet structures and  packet routeing protocols through the network. 
+
+ 
+\begin{figure}[!htbp]
+  \begin{center}
+    \includegraphics[scale=0.15]{cluster.png}
+    \caption{Cluster}
+    \label{fig:Cluster}
+  \end{center}
+\end{figure}
+
+\section{Architecture}
+In this design, couple of COTS (Component of the shelf) FPGA board are connected to the host over PCIe and they are also interconnected over a Multi Gigabit Transceiver Interface (MGT) to form a local FPGA network (see fig:\ref{fig:Cluster}). Moreover multiple such hosts are connected in a network to form a cluster.  
+
+Further, each FPGA contains several crypto kernels (crypto compute modules) which operate independently. The number of such kernels are decided by the FPGA resources consumed by each kernel. 
+
+The design follows a layered architecture abstracting underlying network from the user level cryptanalysis application and crypto kernels (compute modules) implemented over FPGA cluster (see fig:\ref{fig:Arch}). The Data transfer takes place in the form of packets between kernel to kernel and host to kernel along these layers(see fig:\ref{fig:flow}). These packets route through the network via packet switches and AXI4 buses arranged in different network topologies. The architecture can be divided into two major parts from the implementation point of view.
+
+\begin{itemize}
+  \item Host (Software)
+  \item FPGA Cluster (Hardware Core)
+\end{itemize}
+
+
+\begin{figure}[!htbp]
+  \begin{center}
+    \includegraphics[scale=0.17]{architecture.png}
+    \caption{Architecture}
+    \label{fig:Arch}
+  \end{center}
+\end{figure}
+
+
+\begin{figure}[!htbp]
+  \begin{center}
+    \includegraphics[scale=0.2]{flow.png}
+    \caption{Data Flow}
+    \label{fig:flow}
+  \end{center}
+\end{figure}
+
+\subsection{Host (Software)}
+The host is responsible for control and communication of job packets to the FPGA cluster and also for communication between hosts. Host components comprised of three main components.
+
+\subsubsection{User Level Crypt-analysis Application}
+User Level Crypt-analysis Application is basically a user interface from where a user can set various cryptanalysis parameters. It further divides the main problem into finer multiple parallel jobs and passes them to the FPGA Core Access Library. It receives asynchronous responses (job results) from the library and compile them in a user-friendly diagrams/compiled results. A high-level language (Python) has been used for faster development.
+
+\subsubsection{FPGA Core Access Library}
+FPGA Core Access Library is majorly responsible for providing abstract FPGA core interface to user Application. It functionality includes
+\begin{itemize}
+  \item Initialises FPGA clusters, underlying network and Crypto Kernels
+  \item Maintains a database of the methods provided by each crypto kernel with their physical address
+  \item Arrange asynchronous jobs from the user application
+  \item Allocation of job numbers and packet encapsulation of jobs with network headers, based on available free crypto kernels
+  \item Forward job packets to the PCIe FIFO (First In First Out) bridge driver
+  \item Mapping received response packets from the PCIe driver with the corresponding job number
+  \item Forwarding results/response to the user application via callback interface for further result/data compilation
+\end{itemize}
+ 
+\subsubsection{PCIe FIFO (First In First Out) bridge driver}
+The PCIe driver has been developed with a FIFO bridge configuration. Development was based on Marcus et. al.\cite{marcus2011mprace} work. It is developed to interface FPGA PCIe Packet Fifo Bridge Core. The driver basically maps job packets memory buffers with the FPGA's internal FIFOs. Further, a driver is also responsible for resetting, configuring and status polling of various parameters of the FPGA Cluster. 
+  
+\subsection{FPGA Cluster (Hardware Core)}
+FPGA Cluster architecture may further be divided into three major design elements.
+
+\begin{itemize}
+  \item Interfaces
+  \item Network Elements
+  \item Crypto Kernels
+\end{itemize}
+
+\subsection{Interfaces}
+Various high speed interfaces have been developed in order to achieve high throughput communication between Host-FPGA and FPGA-FPGA networks.
+
+\subsubsection{PCIe Packet FIFO Bridge}
+PCIe FIFO Bridge core is developed as a FIFO cache to forward job packets from the host machine on a first in first out basis. For this functionality PCIe's TLP (Transaction Layer Packets) DMA (Direct Memory Access) core is developed which maps host memory blocks with its internal FIFO dynamically. Further control/status logic is also developed to configure FPGA Cluster and user application memory FIFOs. DMA (Direct Memory Access) relieves the host processor by directly fetching job packets and pushing results directly to the user memory. It is developed in order to achieve high throughput communication between crypt-analysis application running on the host and the crypto kernel (compute module) on the FPGA. With the present development, we have achieved 2.5 Gbps throughput over 4 lane PCIe interface.
+
+
+\subsubsection{MGT(Multi Gigabit Transceiver) Packet FIFO Bridge}
+MGT(Multi Gigabit Transceiver) is a Serializer/Deserializer (SERDES) consists of Serial In Parallel Out (SIPO) and Parallel In Serial Out (PISO). It can be available as a chip or an IP core and is used for high speed communication with serial/differential interface. As compared to parallel interfaces, routing of SERDES differential signals is less complex for equivalent data throughput. Thus, MGT is preferred choice for inter-FPGA high-speed data communications.
+
+MGT Packet FIFO Bridge core is developed to do inter-FPGA packets transactions. With the present development, we have achieved 2.5 Gbps throughput.
+
+\subsubsection{DDR3 (Double data rate type three SDRAM) Packet FIFO Cache}
+DDR3 Packet FIFO Cache has been developed to cache data packets locally on the FPGA board. This helps in achieving bulk transfers by detaching high-speed paths and the crypto kernels by behaving as an in transit buffer. Because of this, high-speed paths doesn’t get overwhelm as crypto kernels internal buffers get full. Thus, high-speed paths are always ready to accept packets.
+
+\subsection{Intra-FPGA Network Elements}
+Cryptanalysis computations are subdivided and formatted into job packets and results of these intensive job computations are not instant. Thus, jobs are processed in the framework asynchronously. These job packets flow through the network via various network elements as streams and processed on first come first serve basis. 
+
+
+
+\subsubsection{Modified AXI4 stream bus\cite{stevens2011introduction}}
+Intra-FPGA network is designed to be based on AXI4 stream bus. AXI4 stream is used for high-speed streaming data and is the part of ARM Advanced Microcontroller Bus Architecture (AMBA) family. It is an open-standard on-chip interconnect specification used in system-on-a-chip (SoC) designs for the connection and management of the functional blocks.
+
+As AXI4 stream bus is having separate read and write lanes, a master can simultaneously read and write streams to/from slaves achieving higher throughput. Further slaves (crypto kernels) are arranged down the stream bus in a daisy chained fashion(see fig:\ref{fig:ModifiedAXI4}). Pipe-lining is being implemented at every kernel connection in order to reduce path delays and achieve timing constraints. 
+
+The bus is configured in a single master and multiple slave mode. Apart from other generic signals\cite{amba20104} (see table:\ref{tab:AXI4Sig}) `tuser' of the read lane is customised for passing access tokens among slaves by a bus master. Based on this access token, slaves can send result packets back to the host or further, forward job packets to another kernel.
+
+\begin{table}[!htbp]
+  \caption{AXI4 stream bus signals}
+  \label{tab:AXI4Sig}
+
+  \begin{center}
+    \begin{tabular}{|c|c|c|}
+      \hline
+       Signal Name & Size & Direction\\
+      \hline
+       Write Bus & & \\
+      \hline
+       tvalid & 1 bit & Master$\,\to\,$Slave\\
+      \hline
+       tready & 1 bit & Slave$\,\to\,$Master\\
+      \hline
+       tdata & 64 bit & Master$\,\to\,$Slave\\
+      \hline
+       tkeep & 8 bit & Master$\,\to\,$Slave\\
+      \hline
+       tlast & 1 bit & Master$\,\to\,$Slave\\
+      \hline
+       tid & 4 bit & Master$\,\to\,$Slave\\
+      \hline
+       tdest & 4 bit & Master$\,\to\,$Slave\\
+      \hline
+       tuser & 4 bit & Master$\,\to\,$Slave\\
+      \hline      
+       Read Bus & & \\
+      \hline
+       tvalid & 1 bit & Slave$\,\to\,$Master\\
+      \hline
+       tready & 1 bit & Master$\,\to\,$Slave\\
+      \hline
+       tdata & 64 bit & Slave$\,\to\,$Master\\
+      \hline
+       tkeep & 8 bit & Slave$\,\to\,$Master\\
+      \hline
+       tlast & 1 bit & Slave$\,\to\,$Master\\
+      \hline
+       tid & 4 bit & Slave$\,\to\,$Master\\
+      \hline
+       tdest & 4 bit & Slave$\,\to\,$Master\\
+      \hline
+       tuser & 4 bit & Master$\,\to\,$Slave\\
+      \hline      
+    \end{tabular}
+  \end{center}
+\end{table}
+
+\begin{figure}[!htbp]
+  \begin{center}
+    \includegraphics[scale=0.25]{Master.png}
+    \caption{AXI4 Master/Forwarder}
+    \label{fig:Master}
+  \end{center}
+\end{figure}
+
+\begin{figure}[!htbp]
+  \begin{center}
+    \includegraphics[scale=0.2]{ModifiedAXI4.png}
+    \caption{Modified AXI4 Ring}
+    \label{fig:ModifiedAXI4}
+  \end{center}
+\end{figure}
+
+
+\subsubsection{AXI4 bus Master/ forwarder}
+AXI4 bus Master/forwarder controls job packet movement over the AXI4 bus. Due to separate read and write buses Inter-slave communication is not possible by design. but with few tweaks, inter-slave communication and local network broadcasting is also made possible. For inter-slave communication, the bus master is developed with an extra capability of bypass switch between read and write bus lanes (see fig:\ref{fig:Master}). When master sense that a slave wants to communicates with the other slave in the local network its sets itself into a bypass mode. Bypass mode forward read bus lane packets coming from slaves to the write bus lane so that it gets routed to the destined slave. The only drawback is, while in this mode, throughput drops to half as both the buses gets used while single packet transactions. Typically bus masters are connected with a high-speed interface like PCIe bridge or MGT bridge but it can also be connected as slave on the another AXI4 bus just to extend the network (see fig:\ref{fig:AXI4Network}). Such extensions don't overload the root bus while local inter-kernel communications. 
+
+\begin{figure}[!htbp]
+  \begin{center}
+    \includegraphics[scale=0.1]{AXI4Network.png}
+    \caption{Modified AXI4 Networked Rings}
+    \label{fig:AXI4Network}
+  \end{center}
+\end{figure}
+
+\subsubsection{AXI4 Slaves}
+AXI4 slaves are supposed to receive job packets from the master based on their unique identifier, they can also receive broadcast packets if `tdest' is set to broadcast identifier. They are daisy chained on an AXI4 bus (see fig:\ref{fig:Pipelined}). Since a packet transaction, either in read lane or write lane blocks that particular lane, further slave-slave packet transaction blocks the whole lane, there is an upper cap on slave counts on an AXI4 bus. A Large number of slaves may introduce the communication bottlenecks because of the large throughput requirement. For an efficient slave to slave communication one should place all the interactive kernels on the same local bus.
+
+\begin{figure}[!htbp]
+  \begin{center}
+    \includegraphics[scale=0.3]{Pipelined.png}
+    \caption{Pipe-lined Slave connector over AXI4 bus}
+    \label{fig:Pipelined}
+  \end{center}
+\end{figure}
+
+
+\subsection{Crypto Kernel and other basic modules}
+Crypto Kernel is the smallest function (method) specific compute module of a larger granular design. It is responsible for a simpler functionality which is needed to be computed in a highly parallel fashion. Apart from unified status/command get/set mechanisms, framework also specifies method/function declaration request/response mechanism based on unique method/function identifiers. Each kernel is allocated and identified by a unique network address and unique method/function identifier based on its functionality.
+
+\subsubsection{Packet FIFO (First In First Out) Buffer}
+Packet FIFO (First In First Out) buffers are used as an endpoint receivers as in slaves and also as intermediate transit queues to cache the packets and forward it to the next hop as in bus masters and high-speed bridges. They are preferred to dual port ram buffers, as data flows in the form of packet streams in network. FIFO also reduces the routeing cost as address lines are not required to be routed in contrast with ram buffer design. Further reducing the design complexity.  
+
+\subsubsection{Packet Parser}
+Packet Parser is a terminating node in a network and abstracts kernel functionality. It exposes kernel functions through data structures. It parses packets from the network and extracts underlying data structure, that is meant to be arguments for the kernel. It initialize the kernel module with extracted arguments data and run. After execution, it fetches the result. Further, It compose the result in a data structure, encapsulate it in a packet adding header information and send it back to the host/source. 
+
+
+\begin{figure}[!htbp]
+  \begin{center}
+    \includegraphics[scale=0.50]{parser.png}
+    \caption{Packet Parser}
+    \label{fig:parser}
+  \end{center}
+\end{figure}
+
+\section{Job Packet}
+
+Data communication between the kernel pairs and host-kernel happens over a networked architecture in the form of packets. These packets get generated in the application layer where a cryptanalysis problem is subdivided into parallel jobs with distinct methods and data arguments. Thus, individual jobs get encapsulate into an application layer packets and header contains compute methods, allocated kernel id, job identifier (packet id) and various kernel configuration parameters.
+
+Further in order to propagate over the complex network, packets are appended with the network header containing length of packets, destination identifier and source identifier.
+
+In order to synchronise boundaries of each packet over AXI4 bus and High Speed bridges one or more packets are encapsulated in the data link layer packet. Data link header presently comprised of a start of packet (see table:\ref{tab:packet}).
+
+\begin{table}[!htbp]
+  \caption{Packet Structure}
+  \label{tab:packet}
+  \begin{center}
+    {\scriptsize
+    \begin{tabular}{ m{1.2cm} | m{0.4cm} | m{0.4cm} | m{0.4cm} | m{0.4cm} | m{0.4cm} | m{0.4cm} | m{0.4cm} | m{0.4cm} |}
+        & 7 & 6 & 5 & 4 & 3 & 2 & 1 & 0 \\
+      \cline{2-9} %\hline
+      dlnk header & \multicolumn{8}{c|}{Start of Packet}\\
+      \cline{2-9} %\hline 
+
+      net. header & X & X & \multicolumn{2}{c|}{source} & \multicolumn{2}{c|}{sink} & \multicolumn{2}{c|}{length}\\ 
+      \cline{2-9} %\hline 
+      App. header & \multicolumn{2}{c|}{packetid} & \multicolumn{2}{c|}{size} & mode & nk & enc & Kid\\ 
+      \cline{2-9} %\hline 
+      Data & \multicolumn{8}{c|}{Key 0}\\
+      \cline{2-9} 
+      \cline{2-9} %\hline 
+      & \multicolumn{8}{c|}{Key 1}\\
+      \cline{2-9} %\hline 
+      & \multicolumn{8}{c|}{Key 2}\\
+      \cline{2-9} %\hline 
+      & \multicolumn{8}{c|}{Key 3}\\ 
+      \cline{2-9} %\hline 
+      & \multicolumn{8}{c|}{Data 0}\\
+      \cline{2-9} %\hline 
+      & \multicolumn{8}{c|}{Data 1}\\ 
+      \cline{2-9} %\hline 
+    \end{tabular}
+    }
+  \end{center}
+\end{table}
+
+%\section{Network Topologies}
+
+%As there are multiple kernels resides on a single FPGA die, their efficient interconnections are crucial for the design. As fully interconnected network mesh may be the best for data communication but network resource overheads may make them the worst design. Similarly, ring network may reduce the network resource overheads to the minimum but it will bottleneck the connectivity by allowing only two nodes to talk at a time.
+
+%Thus, various network topologies have been studied based on their routeing overheads and connectivity. Other concerns like simpler routeing mechanism (minimal routeing tables), simpler router design, scheduler design etc. do boil down to routeing overheads or connectivity domain.
+
+%Mesh and Tree Topologies have been studied in this project. And based on their properties a hybrid network topology is proposed for the underlying framework.
+
+\section{Results}
+
+The proposed architecture was implemented using four ML-605 Virtex-6 FPGA Boards. As a capability demonstration application for such system, partial key brute force on AES-256 has been carried out. In this scenario the kernel is an AES-256 core, developed under our previous work \cite{bajpaidesign} with the following specifications (see table:\ref{tab:AES}). 
+
+\begin{table}[!htbp]
+  \caption{AES-256 core (Crypto Kernel) specifications}
+  \label{tab:AES}
+
+  \begin{center}
+    \begin{tabular}{|c|c|}
+      \hline
+       Device & xc6vlx240t-1ff1156\\
+      \hline
+       Kernel & AES-256 core\\
+      \hline
+       Latency & 128 Clock Cycles\\
+      \hline
+       Channels & 8\\
+      \hline
+       Clock & 200 Mhz\\
+      \hline
+       Throughput & 1.49 Gbits/Sec\\
+       & $\sim$ 12.5 Million Encryption/Sec\\
+      \hline
+       Slice Logic Utilization & \\
+      \hline
+       Number of Slice Registers &  4448  out of  301440  1\% \\ 
+      \hline
+       Number of Slice LUTs &  5467  out of  150720 3\% \\ 
+      \hline      
+    \end{tabular}
+  \end{center}
+\end{table}
+
+
+%The proposed architecture was implemented using four ML-605 Virtex-6 FPGA Boards which were featured with PCIe link, SMA ports and DDR3 SDRAM. Timing delays due to data transfer via PCIe bus and MGT Transceivers were calculated on-chip by transaction of the test packets. PCIe domain clock is working at 125MHz and providing a total link rate of 2.5Gbps for 4 lanes. This process of writing 8KB data to BRAM mapped to PCIe takes about $25\mu s$. Data transfer using MGT Transceivers and SMA Cables occurs at line rate of 3.125Gbps with single line being used. Total time taken for reading data from BRAM, sending it to the next FPGA over SMA and writing in a local buffer is about $30\mu s$ at 200MHz clock frequency. 
+
+Comparison have been done between developed FPGA cluster with varying AES-256 crypto cores (kernels) and the AES-256 ECB implementations over x86 processors (see table:\ref{tab:AESComp}). 
+
+%\begin{sidewaystable}[!htbp]
+\begin{table}[!htbp]
+  \caption{AES-256 crypto cores vs AES-256 ECB on X86 processors}
+  \label{tab:AESComp}
+  \scriptsize
+
+  \begin{center}
+    \begin{tabular}{|p{1cm}|p{0.9cm}|p{0.9cm}|p{0.9cm}|p{0.8cm}|p{0.8cm}|}
+      \hline
+       &Single AES core on one xc6vlx240t FPGA board&	Multiple AES cores on one xc6vlx240t FPGA board& Cluster with 4 xc6vlx240t FPGA board& i3-3220 CPU @ 3.30GHz &	i3-3220 CPU @ 3.30GHz AES-NI crypto extension\\
+      \hline
+      Boards	 &1	  &1	  &4  & & \\
+      \hline
+      cores	   &1	  &16	  &64	 & & \\	
+      \hline
+      Latency	 &128&128&128&& \\	
+      \hline    
+      Channels &8&8&8&& \\	
+      \hline
+      Clock&200Mhz&200Mhz&200Mhz&3.30Ghz&3.30Ghz\\
+      \hline
+      Throughput&&&&&\\
+      \hline
+      Gbits/sec&1.49	&22.58	&90.12	&0.71	&1.80 \\	
+      \hline
+      Million block enc/sec	&12.5	&180.64	&720.96	&5.95	&15.13 \\	
+      \hline      
+    \end{tabular}
+  \end{center}
+%\end{sidewaystable}
+\end{table}
+
+
+%\begin{figure}[!htbp]
+%  \begin{center}
+%    \includegraphics[scale=0.5]{FPGArea.png}
+%    \caption{FPGA Area plan with 2 AES-256 module}
+%    \label{fig:FPGArea}
+%  \end{center}
+%\end{figure}
+
+%\begin{figure}[!htbp]
+%  \begin{center}
+%    \includegraphics[scale=0.05]{hardware.png}
+%    \caption{FPGA Cluster Setup}
+%    \label{fig:hardware}
+%  \end{center}
+%\end{figure}
+
+Further, we have compared different architectures comprised of higher end GPUs, X86 Processors and this design. Since there are large variations between costs and power among these architectures, various normalised comparisons based on cost(see fig:\ref{fig:bar0}), power(see fig:\ref{fig:bar1}), cost and power(see fig:\ref{fig:bar2}) are done (see table:\ref{tab:Throughput/cost}).
+
+\begin{table}[!htbp]
+  \caption{AES 256 encryption Throughput, Cost, Power for different architectures}
+  \label{tab:Throughput/cost}
+  \scriptsize
+
+  \begin{center}
+    \begin{tabular}{|p{2cm}|p{1cm}|p{1cm}|p{0.75cm}|p{0.75cm}|}
+      \hline
+      & Throughput Gbps & Throughput Gbps (Extrapolated for AES256 ECB 14 rounds)& cost \$ &Power watt(W)\\
+      \hline
+corei3        & 0.71  && 377    & 120\\
+      \hline
+corei3 ani    & 1.80    && 377    & 120\\
+      \hline
+Geforce GTX285& 6.25 (AES128 ECB 10 rounds)\cite{nishikawa2010granularity}     &4.46& 400    & 316\\
+      \hline
+Tesla C2050   & 50.6 (AES128 ECB 10 rounds)\cite{6131810}   &36.14& 5159   & 238\\
+      \hline
+Tesla C2050   & 60 (AES128 ECB 10 rounds) \cite{6332257}    &42.85& 5159   & 238\\
+      \hline
+xc6vlx240t-1ff1156 FPGA 1 cores (this design)     & 1.49    && 1995   & 45\\
+      \hline
+xc6vlx240t-1ff1156 FPGA 2 cores (this design)     & 2.80     && 1995   & 120\\
+      \hline
+xc6vlx240t-1ff1156 FPGA 16 cores (this design)    & 22.58    && 1995   & 120\\
+      \hline
+    \end{tabular}
+    
+  \end{center}
+%\end{sidewaystable}
+\end{table}
+
+\begin{figure}[!htbp]
+  \begin{center}
+    \includegraphics[scale=0.5]{tput1.png}
+    \caption{Throughput per Unit Cost}
+    \label{fig:bar0}
+  \end{center}
+\end{figure}
+\begin{figure}[!htbp]
+  \begin{center}
+    \includegraphics[scale=0.5]{tput2.png}
+    \caption{Throughput per Unit Power}
+    \label{fig:bar1}
+  \end{center}
+\end{figure}
+\begin{figure}[!htbp]
+  \begin{center}
+    \includegraphics[scale=0.5]{tput3.png}
+    \caption{Throughput per Unit Power per Cost}
+    \label{fig:bar2}
+  \end{center}
+\end{figure}
+
+
+\section{Conclusion}
+We have reported a scalable parallel FPGA cluster framework for cryptanalysis applications. This framework is suitable for many computation intensive applications of different sizes and complexity. The flexibility provided enables it to be used with various FPGAs supporting different kind of high-speed interfaces. User can configure various cluster-parameters and node counts according to the computational requirements.
+
+
+%\section*{Acknowledgment}
+%We would like to acknowledge Shri R S Mundada, Head Computer Division and Shri S K Parulkar Formar Head Secure Application Section for initiating and supporting this activity. We would also like to acknowledge Mr. Saket Sourav for 
+
+\bibliography{citations}
+\bibliographystyle{ieeetr}
+
+\end{document}

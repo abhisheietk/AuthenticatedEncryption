@@ -16,3 +16,6 @@
 /latex/build/AESPlan.pdf
 /latex/build/AESPlan.synctex.gz
 /latex/build/AESPlan.toc
+*.pyc
+*.vcd.*
+*.vcd

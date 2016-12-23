@@ -1,0 +1,435 @@
+%%
+%% This is file `template-8s.tex',
+%% generated with the docstrip utility.
+%%
+%% The original source files were:
+%%
+%% template.raw  (with options: `8s')
+%% 
+%% Template for the LaTeX class aipproc.
+%% 
+%% (C) 1998,2000,2001 American Institute of Physics and Frank Mittelbach
+%% All rights reserved
+%% 
+%%
+%% $Id: template.raw,v 1.12 2005/07/06 19:22:14 frank Exp $
+%%
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% Please remove the next line of code if you
+%% are satisfied that your installation is
+%% complete and working.
+%%
+%% It is only there to help you in detecting
+%% potential problems.
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\input{aipcheck}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% SELECT THE LAYOUT
+%%
+%% The class supports further options.
+%% See aipguide.pdf for details.
+%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\documentclass[
+    ,final            % use final for the camera ready runs
+%%  ,draft            % use draft while you are working on the paper
+%%  ,numberedheadings % uncomment this option for numbered sections
+%%  ,                 % add further options here if necessary
+  ]
+  {aipproc}
+
+\layoutstyle{8x11single}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% FRONTMATTER
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{document}
+
+\title{Design and Development of an Optimised Hardware Encryption module of gigabit throughput base on Composite Glois Field Arithmetic with Feedback Modes}
+
+\classification{<Replace this text with PACS numbers; choose from this list:
+               \texttt{http://www.aip..org/pacs/index.html}>}
+\keywords      {Cryptography, AES, Galois Field, Composite Galois Field, Hardware Emplementation(FPGA), Crypto API}
+
+\author{Abhishek Bajpai}{
+  address={abbajpai@barc.gov.in}
+}
+
+\author{Bhagwan Bathe}{
+  address={bathebn@barc.gov.in}
+}
+
+\author{S K Parulkar}{
+  address={skparul@barc.gov.in}
+}
+
+\author{A G Apte}{
+  address={apteag@barc.gov.in}
+  ,altaddress={Computer Division, BARC, Mumbai} % additional visiting address
+}
+
+
+\begin{abstract}
+There is a constant security threat to the information we communicate on general media. Most of the communication is done without or with moderate security. It is required to shift to the secured environment in which the information is conveyed in secured encrypted form. But this shift is not possible with today’s available 8; 32 bit device controllers as encryption algorithm are computational intensive.
+
+
+On the other hand hardware approach based on FPGA is bit promising. As algorithm runs parallel in the core and there is a lot of scope for pipe-lining. Modular Hardware based on this approach can give us good solution for our security problems in communication devices.
+
+Implementation of an Encryption algorithm on FPGA is not a new concept. But there is a scope in its optimum implementation. As AES is a new algorithm lot of work is yet to be done in optimization. Multichannel highthroughput design for an Optimised AES FPGA Implementation Feedback Modes.
+
+Frequently asked questions can be found in the \texttt{FAQ.txt}
+ document.
+
+\end{abstract}
+
+\maketitle
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% MAINMATTER
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\section{<A section>}
+
+  Infandum, regina, iubes renovare dolorem, Troianas ut opes et
+  lamentabile regnum cruerint Danai; quaeque ipse miserrima vidi, et
+  quorum pars magna fui. Quis talia fando Myrmidonum Dolopumve aut
+  duri miles Ulixi temperet a lacrimis? Et iam nox umida caelo
+  praecipitat, suadentque cadentia sidera somnos.
+
+\section{<Another section>}
+
+\subsection{<A subsection>}
+
+Infandum, regina, iubes renovare dolorem, Troianas ut opes et
+lamentabile\footnote{Here we test footnotes.} regnum cruerint Danai;
+quaeque ipse miserrima vidi, et quorum pars magna fui. Quis talia
+fando Myrmidonum Dolopumve aut duri miles Ulixi temperet a
+lacrimis? Et iam nox umida caelo praecipitat, suadentque cadentia
+sidera somnos. Sed si tantus amor casus cognoscere nostros
+et\footnote{Et iam nox umida caelo praecipitat, suadentque cadentia
+sidera somnos. Et iam nox umida caelo praecipitat, suadentque cadentia
+sidera somnos.} breviter Troiae supremum audire laborem, quamquam
+animus meminisse\footnote{Here we test footnotes.} horret, luctuque
+refugit, incipiam.  Et iam nox umida caelo praecipitat, suadentque
+cadentia sidera somnos. Sed si tantus amor casus
+cognoscere\footnote{Here we test footnotes.} nostros et breviter Troiae
+supremum audire laborem, quamquam animus meminisse horret,
+luctuque refugit, incipiam.
+
+Some url test \url{http://www.world.universe}.
+
+\subsubsection{<A subsubsection>}
+
+Et iam nox umida caelo praecipitat $J_{ion}$ suadentque cadentia
+sidera somnos. Sed si tantus amor casus cognoscere nostros et breviter
+Troiae $J_{ion}$ supremum audire laborem:
+\begin{equation}
+J_{ion}=A\frac{exp\left[-\frac{E_a}{kT}\right]}{kT}\alpha \label{ionflux}
+\end{equation}
+lamentabile regnum cruerint Danai; quaeque ipse miserrima vidi, et
+quorum pars magna fui. $A$ talia fando, $E_a$ iam nox umida, $k$ caelo
+praecipitat, suadentque cadentia sidera somnos. See \eqref{ionflux}.
+
+\paragraph{<A subsubsubsection>}
+
+Infandum, regina, iubes renovare dolorem, Troianas ut opes et
+lamentabile regnum cruerint Danai; quaeque ipse miserrima vidi, et
+quorum pars magna fui \cite{Brown2000,BrownAustin:2000}. Quis talia fando
+Myrmidonum Dolopumve aut duri miles Ulixi temperet
+\cite{Mittelbach/Schoepf:1990} a lacrimis? Et iam
+nox umida caelo praecipitat, suadentque \cite{Wang} cadentia
+sidera somnos.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% Sample figure:
+%%
+%% The option [height=...] scales the picture to the given height,
+%% without it it would be printed at its nominal size
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{figure}
+  \includegraphics[height=.3\textheight]{golfer}
+  \caption{Picture to fixed height}
+\end{figure}
+
+Infandum, regina, iubes renovare dolorem, Troianas ut opes et
+lamentabile regnum cruerint Danai; quaeque ipse miserrima vidi, et
+quorum pars magna fui. Quis talia fando Myrmidonum Dolopumve aut duri
+miles Ulixi temperet a lacrimis?
+
+Infandum, regina, iubes renovare dolorem, Troianas ut opes et
+lamentabile regnum cruerint Danai; quaeque ipse miserrima vidi, et
+quorum pars magna fui. Quis talia\footnote{A few more footnotes} fando
+Myrmidonum Dolopumve aut duri miles Ulixi temperet a lacrimis? Et iam
+nox umida caelo praecipitat, suadentque cadentia\footnote{Here we test
+footnotes.} sidera somnos. Sed si tantus amor casus cognoscere nostros
+et breviter Troiae supremum audire laborem, quamquam animus meminisse
+horret, luctuque refugit, incipiam.
+In the following we test itemize environments up to the forth level.
+\begin{itemize}
+\item
+  An item with more than a line of text. Infandum, regina, iubes
+  renovare dolorem, Troianas ut opes et lamentabile regnum cruerint
+  Danai.
+\item
+  Another item with sub entries
+  \begin{itemize}
+  \item
+   A sub entry.
+  \item
+   Second sub entry.
+    \begin{itemize}
+    \item
+     A sub sub entry.
+      \begin{itemize}
+      \item
+       A sub sub sub entry.
+      \item
+       Second sub sub sub entry.
+      \end{itemize}
+    \item
+     Second sub sub entry.
+    \end{itemize}
+  \end{itemize}
+\item
+  A final item.
+\end{itemize}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% SAMPLE TABLE
+%%
+%% Shows the use of \tablehead and \tablenote
+%% macros
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{table}
+\begin{tabular}{lrrrr}
+\hline
+  \tablehead{1}{r}{b}{}
+  & \tablehead{1}{r}{b}{Devices}
+  & \tablehead{1}{r}{b}{CLB Slices}
+  & \tablehead{1}{r}{b}{Throughput(Mbits/Sec)}   \\
+\hline
+Ichikawa & VLSI & & 1950\\
+Weeks & VLSI & & 1950\\
+Lutz & VLSI & & 2263\\
+Elbirt& xcv1000 & 9004 & 1940\\
+McLoone and McCanny& XCV3200E & 7576 & 3239\\
+E Rodriguez-Henriquez& XCV2000E & 5677+80 Brams & 4129\\
+This Design& XC4VFX12 & 3206 & 3315.2\\
+\hline
+\end{tabular}
+\caption{Size and Delay comprison of different Core Implementations studied with this design}
+\label{tab:a}
+\end{table}
+
+\begin{table}
+\begin{tabular}{lrrrr}
+\hline
+  \tablehead{1}{l}{b}{Sbox}
+  & \tablehead{1}{r}{b}{Total CLB}
+  & \tablehead{1}{r}{b}{1/delay Mhtz}
+  & \tablehead{1}{r}{b}{Throughput \\per unit Size\\ = Freq/CLB}   \\
+\hline
+Euclidean & 140 & 99.80 & 0.71\\
+Euclidean\_1\_Pipeline & 149 & 88.50 & 0.59\\
+Euclidean\_2\_Pipeline & 178 & 64.85 & 0.36\\
+Euclidean\_4\_Pipeline & 211 & 215.05 & 1.02\\
+Sbox+Inv\_EUC\_4\_pline & 110 & 215.05 & 1.96\\
+Composite\_GF & 48 & 71.94 & 1.50\\
+Composite\_GF\_2\_Pline & 79 & 150.83 & 1.91\\
+Composite\_GF\_4\_Pline & 81 & 277.01 & 3.42\\
+Sbox+Inv\_CGF\_4\_pline & 47.5 & 277.01 & 5.83\\
+PPRM & 2148 & 990.09 & 0.46\\
+SOP & 1567 & 1298.70 & 0.83\\
+LUT & 1528 & 1428.57 & 0.93\\
+BDD & 1399 & 1449.28 & 1.04\\
+TBDD & 2818 & 2325.58 & 0.83\\
+\hline
+\end{tabular}
+\caption{Size, Max Frequency and Throughput per Unit Size comparision of different implementations}
+\label{tab:b}
+\end{table}
+
+Infandum, regina, iubes renovare dolorem, Troianas ut opes et
+lamentabile regnum cruerint Danai; quaeque ipse miserrima vidi, et
+quorum pars magna fui. Quis talia fando Myrmidonum Dolopumve aut duri
+miles Ulixi temperet a \cite{EVH:Office} lacrimis? In the following we
+test enumrerate environments up to the second level. In addition we
+look how ridiculous large labels look.
+\begin{enumerate}
+\item
+  An item \cite{Liang:1983}
+\item
+  Another item with sub entries
+  \begin{enumerate}
+  \item
+   A sub entry \cite{Wang}
+  \item
+   Second sub entry
+  \end{enumerate}
+\item
+  The final item with normal label.
+\end{enumerate}
+Infandum, regina, iubes renovare dolorem, Troianas ut opes et
+lamentabile regnum cruerint Danai; quaeque ipse miserrima vidi, et
+quorum pars magna fui. Quis talia  fando Myrmidonum Dolopumve aut duri
+miles Ulixi temperet a lacrimis?
+\begin{description}
+\item[Infandum]
+ regina, iubes renovare dolorem, Troianas ut opes et lamentabile
+ regnum cruerint Danai.
+\item[Sed]
+ si tantus amor casus cognoscere nostros et breviter Troiae supremum
+ audire laborem, quamquam animus meminisse horret, luctuque refugit,
+ incipiam.
+\item[Lamentabile] regnum cruerint Danai; quaeque ipse miserrima vidi, et
+quorum pars magna fui. Quis talia  fando Myrmidonum Dolopumve aut duri
+miles Ulixi temperet a lacrimis?
+\end{description}
+
+Infandum, regina, iubes renovare dolorem, Troianas ut opes et
+lamentabile regnum cruerint Danai; quaeque ipse miserrima vidi, et
+quorum pars magna fui. Quis talia fando Myrmidonum Dolopumve aut duri
+miles Ulixi temperet a lacrimis?
+Infandum, regina, iubes renovare dolorem, Troianas ut opes et
+lamentabile regnum cruerint Danai; quaeque ipse miserrima vidi, et
+quorum pars magna fui. Quis talia fando Myrmidonum Dolopumve aut duri
+miles Ulixi temperet a lacrimis?
+
+Infandum, regina, iubes renovare dolorem, Troianas ut opes et
+lamentabile regnum cruerint Danai; quaeque ipse miserrima vidi, et
+quorum pars magna fui. Quis talia fando Myrmidonum Dolopumve aut duri
+miles Ulixi temperet a lacrimis? Et iam nox umida caelo praecipitat,
+suadentque cadentia sidera somnos. Sed si tantus amor casus
+\cite{Liang:1983} cognoscere nostros et breviter Troiae supremum
+audire laborem, quamquam animus meminisse horret, luctuque refugit,
+incipiam.  Infandum, regina, iubes renovare dolorem, Troianas ut opes
+et lamentabile regnum cruerint Danai; quaeque ipse miserrima vidi, et
+quorum pars magna fui. Quis talia fando Myrmidonum Dolopumve aut duri
+miles Ulixi temperet a \cite{SJ:1999} lacrimis? Et iam nox umida caelo
+praecipitat, suadentque cadentia sidera somnos. Sed si tantus amor
+casus cognoscere nostros et breviter Troiae supremum audire laborem,
+quamquam animus meminisse horret, luctuque refugit, incipiam.
+
+\section{<A section>}
+
+During the development of this projet number of different FPGA based architectures are studied. This study is done on the basis of design size and throughput.
+Among them, architecture based on composite (eld arithmetic is selected due to
+very compact design with moderate delays.
+
+Hard-wire ShiftRow @and snverse ShiftRowA operation in the sbox and byte level
+resource sharing between mix column and inverse mix column lead to both good
+speed and area saving.
+
+ell the transformations are optimized in the time domain y introducing pipelinE
+ing in the transforms having larger gate depth.
+
+purther wultiple parallel transform locks are used in QP it and IPV it designs in
+order to achieve parallelism. elternatively, processing speed could e made higher
+y employing gate array or standard cell technology.
+
+rowever, one should note that the pipeline structure is suitale for igf @ilecE
+tronic gode fookA mode of operation, ut not very useful for other three modes
+@fgf, gpf, and ypf modeA where feedacks are employed.
+
+fut in this design these feedack mode prolem is taken care y dividing the
+pipelined channel into di'erent independent parallel channels. xow these chanE
+nels can work in @fgf, gpf, and ypf modeA feedack mods independently with
+lower throughputsF fut total comined throughput of the design in these feedack
+modes will e equivalent to the throughput of design working as single channel in
+igf mode.
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% BACKMATTER
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{theacknowledgments}
+  Infandum, regina, iubes renovare dolorem, Troianas ut opes et
+  lamentabile regnum cruerint Danai; quaeque ipse miserrima vidi, et
+  quorum pars magna fui. Quis talia fando Myrmidonum Dolopumve aut duri
+  miles Ulixi temperet a lacrimis?
+\end{theacknowledgments}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% The bibliography can be prepared using the BibTeX program or
+%% manually.
+%%
+%% The code below assumes that BibTeX is used.  If the bibliography is
+%% produced without BibTeX comment out the following lines and see the
+%% aipguide.pdf for further information.
+%%
+%% For your convenience a manually coded example is appended
+%% after the \end{document}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% You may have to change the BibTeX style below, depending on your
+%% setup or preferences.
+%%
+%%
+%% For The AIP proceedings layouts use either
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\bibliographystyle{aipproc}   % if natbib is available
+%\bibliographystyle{aipprocl} % if natbib is missing
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% You probably want to use your own bibtex database here
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\bibliography{sample}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% Just a reminder that you may have to run bibtex
+%% All of it up to \end{document} can be removed
+%% if you don't like the warning.
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\IfFileExists{\jobname.bbl}{}
+ {\typeout{}
+  \typeout{******************************************}
+  \typeout{** Please run "bibtex \jobname" to optain}
+  \typeout{** the bibliography and then re-run LaTeX}
+  \typeout{** twice to fix the references!}
+  \typeout{******************************************}
+  \typeout{}
+ }
+
+\end{document}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% The following lines show an example how to produce a bibliography
+%% without the help of the BibTeX program. This could be used instead
+%% of the above.
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{thebibliography}{9}
+
+\bibitem{Brown2000}
+M.~P. Brown,  and K.~Austin, \emph{The New Physique}, Publisher Name,
+  Publisher City, 2000, pp. 212--213.
+
+\bibitem{BrownAustin:2000}
+M.~P. Brown,  and K.~Austin, \emph{Appl. Phys. Letters} \textbf{85},
+  2503--2504 (2000).
+
+\bibitem{Wang}
+R.~Wang, ``Title of Chapter,'' in \emph{Classic Physiques}, edited by
+  R.~B. Hamil, Publisher Name, Publisher City, 2000, pp. 212--213.
+
+\bibitem{SJ:1999}
+C.~D.~Smith and E.~F.~Jones,  ``Load-Cycling in Cubic Press,'' in
+  \emph{Shock Compression of Condensed Matter-1999}, edited by M.~D.~F. et~al.,
+  AIP Conference Proceedings 505, American Institute of Physics, New York,
+  1999, pp. 651--654.
+
+\end{thebibliography}
+
+\endinput
+%%
+%% End of file `template-8s.tex'.
